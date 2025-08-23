@@ -1,15 +1,17 @@
 [project]
 name = "playlist-api"
 version = "1.0.0"
-description = "APi that recommends a playlist based on what you are currently doing"
+description = "API that recommends a playlist based on what you are currently doing."
 authors = [
-    {name = "Your Name",email = "you@example.com"}
+    {name = "Andrew Boateng",email = "andrew.21@outlook.com"}
 ]
-readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "fastapi[standard] (>=0.116.1,<0.117.0)",
-    "pydantic-settings (>=2.10.1,<3.0.0)"
+    "pydantic-settings (>=2.10.1,<3.0.0)",
+    "requests (>=2.32.5,<3.0.0)",
+    "pytest (>=8.4.1,<9.0.0)",
+    "pydantic (>=2.11.7,<3.0.0)"
 ]
 
 
