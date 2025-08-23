@@ -1,13 +1,14 @@
+from typing import Optional
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
+    model_config = {"env_file": ".env"}
     PROJECT_NAME: str = "Playlist API"
     VERSION: str = "1.0"
     API_V1_STR: str = "/api/v1"
-
-    class Config:
-        env_file = "api/.env"
+    SPOTIFY_CLIENT_ID: Optional[str] = None
+    SPOTIFY_CLIENT_SECRET: Optional[str] = None
 
 
 settings = Settings()
