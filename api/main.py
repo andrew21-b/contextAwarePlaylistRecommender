@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from context.config import settings
+from api.context.config import settings
 
 app = FastAPI(title=settings.PROJECT_NAME, version=settings.VERSION)
 
