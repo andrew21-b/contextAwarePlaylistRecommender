@@ -9,6 +9,8 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     SPOTIFY_CLIENT_ID: Optional[str] = None
     SPOTIFY_CLIENT_SECRET: Optional[str] = None
+    LASTFM_API_KEY: Optional[str] = None
+    LASTFM_SECRET: Optional[str] = None
 
 
 settings = Settings()
