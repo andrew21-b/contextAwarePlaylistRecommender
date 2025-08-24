@@ -1,5 +1,4 @@
 import requests
-from typing import List
 from api.context.config import settings
 
 
@@ -21,7 +20,6 @@ class SpotifyClient:
                 "client_secret": self.client_secret,
             },
         )
-        print(f"Client ID: {self.client_id}, Client Secret: {self.client_secret}")
         res.raise_for_status()
         self.access_token = res.json()["access_token"]
 
@@ -37,10 +35,3 @@ class SpotifyClient:
         if res.status_code != 200 or not res.json()["tracks"]["items"]:
             return None
         return res.json()["tracks"]["items"][0]
-
-    def audio_features(self, track_ids: List[str]):
-        url = "https://api.spotify.com/v1/audio-features"
-        params = {"ids": ",".join(track_ids)}
-        res = requests.get(url, headers=self.get_auth_header(), params=params)
-        res.raise_for_status()
-        return res.json()["audio_features"]
