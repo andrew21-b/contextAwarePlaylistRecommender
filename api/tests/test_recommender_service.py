@@ -24,7 +24,7 @@ def playlists():
 def test_recommend_for_context_returns_expected_structure(
     mock_choice, mock_get_similar_tracks, mock_pick_playlist, playlists
 ):
-    context = "relax"
+    context = {"event": "work", "time_of_day": "evening"}
     base_playlist = playlists[0]
     mock_pick_playlist.return_value = base_playlist
     mock_choice.return_value = "Artist1 - SongA"
@@ -44,7 +44,7 @@ def test_recommend_for_context_returns_expected_structure(
 def test_recommend_for_context_calls_dependencies_correctly(
     mock_choice, mock_get_similar_tracks, mock_pick_playlist, playlists
 ):
-    context = "workout"
+    context = {"event": "meeting", "time_of_day": "morning"}
     base_playlist = playlists[1]
     mock_pick_playlist.return_value = base_playlist
     mock_choice.return_value = "Artist4 - SongD"
@@ -63,7 +63,7 @@ def test_recommend_for_context_calls_dependencies_correctly(
 def test_recommend_for_context_handles_multiple_tracks(
     mock_choice, mock_get_similar_tracks, mock_pick_playlist, playlists
 ):
-    context = "chill"
+    context = {"event": "work", "time_of_day": "night"}
     base_playlist = playlists[0]
     mock_pick_playlist.return_value = base_playlist
     mock_choice.return_value = "Artist2 - SongB"
