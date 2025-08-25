@@ -1,5 +1,5 @@
 def pick_playlist(context, playlists):
-    event = context["calendar_event"].lower()
+    event = context["event"].lower()
     time_of_day = context["time_of_day"].lower()
 
     if "work" in event or "meeting" in event:
