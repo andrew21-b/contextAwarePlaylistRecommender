@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     SPOTIFY_CLIENT_SECRET: Optional[str] = None
     LASTFM_API_KEY: Optional[str] = None
     LASTFM_SECRET: Optional[str] = None
+    OPENAI_API_KEY: Optional[str] = None
 
 
 settings = Settings()
