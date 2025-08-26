@@ -6,28 +6,25 @@ from api.services.context_rules_service import pick_playlist
 client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
 
-def infer_mood(
+async def infer_mood(
     time_of_day: Optional[str],
     calendar_event: Optional[str],
     location: Optional[str],
     social_post: Optional[str],
     playlists: Optional[list],
-) -> str:
+) -> Optional[str]:
     prompt = f"""
-    You are a music mood assistant. Based on context, return ONE mood keyword.
+    You are a music expert. I will give you some context about a user.
+    Your task: Return a single Last.fm tag (genre, mood, or category)
+    that best matches the situation.
 
+    Context:
     Location: {location}
     Time of day: {time_of_day}
     Event: {calendar_event}
     social post: {social_post}
 
-    Examples:
-    - Home at night → "chill"
-    - Office during work hours → "focus"
-    - Gym or running in morning → "energetic"
-    - Dinner date → "romantic"
-
-    Answer with only one word mood:
+    Only return one tag, lowercase, e.g., "indie rock", "chillout", "dance".
     """
 
     try:
@@ -36,10 +33,9 @@ def infer_mood(
         )
         mood = response.choices[0].message.content
         if mood != None:
+            print(f"Inferred mood: {mood.strip().lower()}")
             return mood.strip().lower()
-    except Exception as e:
-        return f"Mood is empty, Error occurred: {e}"
-    finally:
+    except Exception:
         return pick_playlist(
             {
                 "event": calendar_event,
