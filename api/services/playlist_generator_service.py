@@ -6,7 +6,7 @@ from api.services.context_llm_service import infer_mood
 from api.services.lastfm_client import get_tracks_by_mood
 
 
-def load_spotify_playlists(file_path: str = "api/data/spotify_playlists.json") -> list:
+def load_spotify_playlists(file_path: str = "data/spotify_playlists.json") -> list:
     if os.path.exists(file_path):
         with open(file_path, "r") as f:
             return json.load(f)["playlists"]
@@ -20,9 +20,9 @@ def find_playlist_for_mood(mood: str, playlists: list) -> Optional[list]:
     return None
 
 
-def normalize_time(time: str | None) -> str:
+def normalize_time(time: Optional[str]) -> Optional[str]:
     if time is None:
-        raise ValueError(f"time is None")
+        return None
 
     try:
         dt = datetime.strptime(time, "%Y-%m-%d %H:%M:%S")
@@ -58,11 +58,12 @@ def generate_mood_playlist(
     social_post=None,
     max_tracks=10,
 ):
+    playlists = load_spotify_playlists()
+
     mood = infer_mood(
-        normalize_time(time_of_day), calendar_event, location, social_post
+        normalize_time(time_of_day), calendar_event, location, social_post, playlists
     )
 
-    playlists = load_spotify_playlists()
     local_tracks = find_playlist_for_mood(mood, playlists)
 
     if local_tracks:

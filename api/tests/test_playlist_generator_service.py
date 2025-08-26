@@ -65,8 +65,7 @@ def test_normalize_time_valid(input_time, expected):
 
 
 def test_normalize_time_none():
-    with pytest.raises(ValueError):
-        pgs.normalize_time(None)
+    assert pgs.normalize_time(None) == None
 
 
 def test_normalize_time_invalid_format():
