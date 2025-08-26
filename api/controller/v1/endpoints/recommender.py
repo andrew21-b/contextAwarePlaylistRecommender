@@ -1,12 +1,13 @@
 from typing import Optional
 from fastapi import APIRouter, Query
+from api.schemas.playlist_response import PlaylistResponse
 from api.services.playlist_generator_service import generate_mood_playlist
 
 
 router = APIRouter()
 
 
-@router.get("/")
+@router.get("/", response_model=PlaylistResponse)
 async def get_recommendations(
     time_of_day: Optional[str] = Query(
         None, description="Time of day (e.g. 06:00, 15:00:00, 18:00, 22:00:00)"
@@ -27,4 +28,4 @@ async def get_recommendations(
         social_post=social_post,
     )
 
-    return playlist
+    return PlaylistResponse(**playlist)
