@@ -33,7 +33,6 @@ async def infer_mood(
         )
         mood = response.choices[0].message.content
         if mood != None:
-            print(f"Inferred mood: {mood.strip().lower()}")
             return mood.strip().lower()
     except Exception:
         return pick_playlist(
