@@ -73,35 +73,42 @@ def test_normalize_time_invalid_format():
         pgs.normalize_time("not-a-time")
 
 
+@pytest.mark.asyncio
 @patch("api.services.playlist_generator_service.get_tracks_by_mood")
-def test_extend_playlist_with_tracks(mock_get_tracks):
+async def test_extend_playlist_with_tracks(mock_get_tracks):
     playlist = ["a", "b"]
     mock_get_tracks.return_value = ["c", "d"]
-    pgs.extend_playlist_with_tracks(4, "happy", playlist)
+    await pgs.extend_playlist_with_tracks(4, "happy", playlist)
     assert playlist == ["a", "b", "c", "d"]
     mock_get_tracks.assert_called_once_with("happy", limit=2)
 
 
+@pytest.mark.asyncio
 @patch("api.services.playlist_generator_service.infer_mood")
 @patch("api.services.playlist_generator_service.load_spotify_playlists")
 @patch("api.services.playlist_generator_service.find_playlist_for_mood")
 @patch("api.services.playlist_generator_service.extend_playlist_with_tracks")
-def test_generate_mood_playlist_local(mock_extend, mock_find, mock_load, mock_infer):
+async def test_generate_mood_playlist_local(
+    mock_extend, mock_find, mock_load, mock_infer
+):
     mock_infer.return_value = "happy"
     mock_load.return_value = [{"name": "Happy", "tracks": ["a", "b", "c"]}]
     mock_find.return_value = ["a", "b", "c"]
-    result = pgs.generate_mood_playlist(time_of_day="2023-01-01 05:00:00", max_tracks=2)
+    result = await pgs.generate_mood_playlist(
+        time_of_day="2023-01-01 05:00:00", max_tracks=2
+    )
     assert result["mood"] == "happy"
     assert result["playlist"] == ["a", "b"]
     assert result["source"] == "local"
     mock_extend.assert_not_called()
 
 
+@pytest.mark.asyncio
 @patch("api.services.playlist_generator_service.infer_mood")
 @patch("api.services.playlist_generator_service.load_spotify_playlists")
 @patch("api.services.playlist_generator_service.find_playlist_for_mood")
 @patch("api.services.playlist_generator_service.extend_playlist_with_tracks")
-def test_generate_mood_playlist_local_plus_lastfm(
+async def test_generate_mood_playlist_local_plus_lastfm(
     mock_extend, mock_find, mock_load, mock_infer
 ):
     mock_infer.return_value = "happy"
@@ -112,24 +119,29 @@ def test_generate_mood_playlist_local_plus_lastfm(
         playlist.extend(["b", "c"])
 
     mock_extend.side_effect = extend
-    result = pgs.generate_mood_playlist(time_of_day="2023-01-01 05:00:00", max_tracks=3)
+    result = await pgs.generate_mood_playlist(
+        time_of_day="2023-01-01 05:00:00", max_tracks=3
+    )
     assert result["mood"] == "happy"
     assert result["playlist"] == ["a", "b", "c"]
     assert result["source"] == "local+lastfm"
 
 
+@pytest.mark.asyncio
 @patch("api.services.playlist_generator_service.infer_mood")
 @patch("api.services.playlist_generator_service.load_spotify_playlists")
 @patch("api.services.playlist_generator_service.find_playlist_for_mood")
 @patch("api.services.playlist_generator_service.get_tracks_by_mood")
-def test_generate_mood_playlist_lastfm(
+async def test_generate_mood_playlist_lastfm(
     mock_get_tracks, mock_find, mock_load, mock_infer
 ):
     mock_infer.return_value = "sad"
     mock_load.return_value = []
     mock_find.return_value = None
     mock_get_tracks.return_value = ["x", "y"]
-    result = pgs.generate_mood_playlist(time_of_day="2023-01-01 23:00:00", max_tracks=2)
+    result = await pgs.generate_mood_playlist(
+        time_of_day="2023-01-01 23:00:00", max_tracks=2
+    )
     assert result["mood"] == "sad"
     assert result["playlist"] == ["x", "y"]
     assert result["source"] == "lastfm"
