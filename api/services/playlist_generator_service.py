@@ -13,9 +13,9 @@ def load_spotify_playlists(file_path: str = "data/spotify_playlists.json") -> li
     return []
 
 
-def find_playlist_for_mood(mood: str, playlists: list) -> Optional[list]:
+def find_playlist_for_mood(mood: Optional[str], playlists: list) -> Optional[list]:
     for playlist in playlists:
-        if mood.lower() in playlist["name"].lower():
+        if mood and mood.lower() in playlist["name"].lower():
             return playlist["tracks"]
     return None
 
@@ -45,13 +45,15 @@ def normalize_time(time: Optional[str]) -> Optional[str]:
             return "night"
 
 
-def extend_playlist_with_tracks(max_tracks: int, mood: str, playlist: list):
+async def extend_playlist_with_tracks(
+    max_tracks: int, mood: Optional[str], playlist: list
+):
     needed = max_tracks - len(playlist)
-    extra_tracks = get_tracks_by_mood(mood, limit=needed)
+    extra_tracks = await get_tracks_by_mood(mood, limit=needed)
     playlist.extend(extra_tracks)
 
 
-def generate_mood_playlist(
+async def generate_mood_playlist(
     time_of_day=None,
     calendar_event=None,
     location=None,
@@ -60,7 +62,7 @@ def generate_mood_playlist(
 ):
     playlists = load_spotify_playlists()
 
-    mood = infer_mood(
+    mood = await infer_mood(
         normalize_time(time_of_day), calendar_event, location, social_post, playlists
     )
 
@@ -70,7 +72,7 @@ def generate_mood_playlist(
         playlist = local_tracks[:max_tracks]
 
         if len(playlist) < max_tracks:
-            extend_playlist_with_tracks(max_tracks, mood, playlist)
+            await extend_playlist_with_tracks(max_tracks, mood, playlist)
 
         return {
             "mood": mood,
@@ -78,5 +80,5 @@ def generate_mood_playlist(
             "source": "local+lastfm" if len(playlist) > len(local_tracks) else "local",
         }
     else:
-        api_tracks = get_tracks_by_mood(mood, limit=max_tracks)
+        api_tracks = await get_tracks_by_mood(mood, limit=max_tracks)
         return {"mood": mood, "playlist": api_tracks, "source": "lastfm"}

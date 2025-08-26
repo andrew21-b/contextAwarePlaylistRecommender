@@ -4,9 +4,9 @@ def is_context_valid(context):
     return False
 
 
-def pick_playlist(context, playlists):
+def pick_playlist(context, playlists) -> str:
     if not is_context_valid(context):
-        return playlists[1]
+        return playlists[1][0]
 
     event = context["event"].lower() if context["event"] else ""
     time_of_day = context["time_of_day"].lower() if context["time_of_day"] else ""

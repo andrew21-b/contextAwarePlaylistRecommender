@@ -1,4 +1,5 @@
 import requests
+from typing import Optional
 from api.context.config import settings
 
 
@@ -22,7 +23,7 @@ def get_similar_tracks(artist: str, track: str, limit: int = 5) -> list[str]:
     return []
 
 
-def get_tracks_by_mood(mood: str, limit: int = 10) -> list[str]:
+async def get_tracks_by_mood(mood: Optional[str], limit: int = 10) -> list[str]:
     url = "http://ws.audioscrobbler.com/2.0/"
     params = {
         "method": "tag.getTopTracks",

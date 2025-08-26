@@ -7,7 +7,7 @@ router = APIRouter()
 
 
 @router.get("/")
-def get_recommendations(
+async def get_recommendations(
     time_of_day: Optional[str] = Query(
         None, description="Time of day (e.g. 06:00, 15:00:00, 18:00, 22:00:00)"
     ),
@@ -20,7 +20,7 @@ def get_recommendations(
     social_post: Optional[str] = Query(None, description="Recent social media post"),
 ):
 
-    playlist = generate_mood_playlist(
+    playlist = await generate_mood_playlist(
         time_of_day=time_of_day,
         calendar_event=calendar_event,
         location=location,
